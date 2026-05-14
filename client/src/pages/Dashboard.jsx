@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
-
+import Layout from "../components/Layout";
 function Dashboard() {
   const [stats, setStats] = useState({});
   const navigate = useNavigate();
@@ -22,13 +22,89 @@ function Dashboard() {
     }
   };
   return (
-    <div className="container">
-      <h3>Total Tasks: {stats.totalTasks}</h3>
-      <h3>Completed Tasks: {stats.completedTasks}</h3>
-      <h3>Pending Tasks: {stats.pendingTasks}</h3>
-      <h3>Overdue Tasks: {stats.overdueTasks}</h3>
-      <button onClick={() => navigate("/projects")}>Go To Projects</button>
-    </div>
+    <Layout>
+
+        <div className="content-wrapper">
+
+            <div className="dashboard-header">
+
+                <div>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Welcome back to your workspace
+                    </p>
+
+                </div>
+
+                <button
+                    onClick={() =>
+                        navigate("/projects")
+                    }
+                >
+                    View Projects
+                </button>
+
+            </div>
+
+            <div className="dashboard-cards">
+
+                <div className="dashboard-card">
+
+                    <h3>
+                        Total Tasks
+                    </h3>
+
+                    <h1>
+                        {stats.totalTasks || 0}
+                    </h1>
+
+                </div>
+
+                <div className="dashboard-card">
+
+                    <h3>
+                        Completed
+                    </h3>
+
+                    <h1>
+                        {stats.completedTasks || 0}
+                    </h1>
+
+                </div>
+
+                <div className="dashboard-card">
+
+                    <h3>
+                        Pending
+                    </h3>
+
+                    <h1>
+                        {stats.pendingTasks || 0}
+                    </h1>
+
+                </div>
+
+                <div className="dashboard-card">
+
+                    <h3>
+                        Overdue
+                    </h3>
+
+                    <h1>
+                        {stats.overdueTasks || 0}
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </Layout>
   );
 }
 export default Dashboard;

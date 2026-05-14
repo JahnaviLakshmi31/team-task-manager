@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
 function Projects() {
   const [projectName, setProjectName] = useState("");
   const [projects, setProjects] = useState([]);
@@ -46,7 +47,7 @@ function Projects() {
     }
   };
   return (
-    <div className="container">
+    <Layout>
       <h1>Projects</h1>
       <form onSubmit={handleCreateProject}>
         <input
@@ -64,7 +65,7 @@ function Projects() {
         </div>
       ))}
       <button onClick={() => navigate("/tasks")}>Go To Tasks</button>
-    </div>
+    </Layout>
   );
 }
 export default Projects;
