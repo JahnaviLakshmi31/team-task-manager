@@ -1,0 +1,35 @@
+const express = require('express');
+const app = express();
+const cors = require('cors');
+require('./db/db');
+
+const authMiddleware = require("./middleware/authMiddleware");
+
+const authRoutes = require('./routes/authRoutes');
+const projectRoutes = require("./routes/projectRoute");
+const taskRoutes = require("./routes/taskRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+
+
+app.use(cors({}));
+app.use(express.json());
+
+app.use("/projects", projectRoutes);
+app.use("/tasks", taskRoutes);
+app.use("/dashboard", dashboardRoutes);
+app.use('/auth', authRoutes);
+
+app.get('/', (req, res) => {
+    res.send('Server running')
+})
+
+app.get("/profile", authMiddleware, (req, res) => {
+    res.json({
+        message: "Protected route accessed",
+        user: req.user
+    });
+});
+
+app.listen(5000, () => {
+    console.log('Server Started');
+})
