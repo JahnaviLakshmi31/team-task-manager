@@ -9,15 +9,18 @@ const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require("./routes/projectRoute");
 const taskRoutes = require("./routes/taskRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
-
+const projectMembersRoutes = require("./routes/projectMembersR")
+const userRoutes = require("./routes/userRoutes");
 
 app.use(cors({}));
 app.use(express.json());
 
+app.use('/auth', authRoutes);
 app.use("/projects", projectRoutes);
 app.use("/tasks", taskRoutes);
 app.use("/dashboard", dashboardRoutes);
-app.use('/auth', authRoutes);
+app.use('/projectMembers',projectMembersRoutes);
+app.use("/users", userRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server running')

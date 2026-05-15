@@ -6,26 +6,21 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleLogin = async(e)=>{
+  const handleLogin = async (e) => {
     e.preventDefault();
-    try{
-        const response = await API.post(
-            "/auth/login",
-            {email,password}
-        );
-        alert(response.data.message);
-        localStorage.setItem(
-            "token",
-            response.data.token
-        );
-        navigate("/dashboard");
-        setEmail("");
-        setPassword("");
+    try {
+      const response = await API.post("/auth/login", { email, password });
+      console.log(response.data);
+      alert(response.data.message);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+      navigate("/dashboard");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      alert("Login Failed");
     }
-    catch(error){
-        alert("Login Failed");
-    }
-  }
+  };
   return (
     <div className="container">
       <h1>Login</h1>
@@ -48,6 +43,15 @@ function Login() {
         <br />
         <button>Login</button>
       </form>
+      <p>
+  Don't have an account?
+  <span
+    onClick={() => navigate("/register")}
+    style={{ color: "blue", cursor: "pointer" }}
+  >
+    Register
+  </span>
+</p>
     </div>
   );
 }

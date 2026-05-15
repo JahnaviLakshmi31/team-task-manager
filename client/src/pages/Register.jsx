@@ -1,9 +1,11 @@
 import { useState } from "react";
 import API from "../services/api";
+import { useNavigate } from "react-router-dom";
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -13,6 +15,7 @@ function Register() {
         password,
       });
       alert(response.data.message);
+      navigate("/");
       setName("");
       setEmail("");
       setPassword("");
