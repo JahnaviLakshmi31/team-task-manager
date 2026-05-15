@@ -1,18 +1,23 @@
 const db = require("../db/db");
 
 const getDashboardData = (req, res) => {
+
     const userId = req.user.id;
+
     const role = req.user.role;
 
-    let totalTasksQuery;
-    let statusQuery;
-    let overdueQuery;
-    let userTaskQuery;
+    let totalTasksQuery = "";
+    let statusQuery = "";
+    let overdueQuery = "";
+    let userTaskQuery = "";
 
     // ================= ADMIN =================
     if (role === "Admin") {
 
-        totalTasksQuery = "SELECT COUNT(*) AS total FROM tasks";
+        totalTasksQuery = `
+            SELECT COUNT(*) AS total
+            FROM tasks
+        `;
 
         statusQuery = `
             SELECT status, COUNT(*) AS count
@@ -23,15 +28,17 @@ const getDashboardData = (req, res) => {
         overdueQuery = `
             SELECT COUNT(*) AS overdue
             FROM tasks
-            WHERE due_date < CURDATE() AND status != 'Done'
+            WHERE due_date < CURDATE()
+            AND status != 'Done'
         `;
 
         userTaskQuery = `
-            SELECT u.name, COUNT(t.id) AS task_count
-            FROM users u
-            LEFT JOIN tasks t ON u.id = t.assigned_to
-            WHERE u.role != 'admin'
-            GROUP BY u.id
+            SELECT users.name,
+                   COUNT(tasks.id) AS task_count
+            FROM users
+            LEFT JOIN tasks
+            ON users.id = tasks.assigned_to
+            GROUP BY users.id
         `;
     }
 
@@ -52,45 +59,66 @@ const getDashboardData = (req, res) => {
         `;
 
         overdueQuery = `
-    SELECT COUNT(*) AS overdue
-    FROM tasks
-    WHERE DATE(due_date) < CURDATE()
-    AND status != 'Done'
-`;
-
-        userTaskQuery = `
-            SELECT status, COUNT(*) AS count
+            SELECT COUNT(*) AS overdue
             FROM tasks
             WHERE assigned_to = ?
-            GROUP BY status
+            AND due_date < CURDATE()
+            AND status != 'Done'
         `;
     }
 
-    // ============== EXECUTION ==============
-    const param = role === "Admin" ? [] : [userId];
+    // ================= ADMIN EXECUTION =================
+    if (role === "Admin") {
 
-    db.query(totalTasksQuery, param, (err, totalResult) => {
-        if (err) return res.status(500).json({ message: "Error fetching total tasks" });
+        db.query(totalTasksQuery, (err1, totalResult) => {
 
-        db.query(statusQuery, param, (err2, statusResult) => {
-            if (err2) return res.status(500).json({ message: "Error fetching status data" });
+            db.query(statusQuery, (err2, statusResult) => {
 
-            db.query(overdueQuery, param, (err3, overdueResult) => {
-                if (err3) return res.status(500).json({ message: "Error fetching overdue tasks" });
+                db.query(overdueQuery, (err3, overdueResult) => {
 
-                db.query(userTaskQuery, param, (err4, userResult) => {
-                    if (err4) return res.status(500).json({ message: "Error fetching user stats" });
+                    db.query(userTaskQuery, (err4, userResult) => {
 
-                    return res.status(200).json({
+                        return res.json({
+                            totalTasks: totalResult[0].total,
+                            statusBreakdown: statusResult,
+                            overdueTasks: overdueResult[0].overdue,
+                            userStats: userResult
+                        });
+
+                    });
+
+                });
+
+            });
+
+        });
+
+    }
+
+    // ================= MEMBER EXECUTION =================
+    else {
+
+        db.query(totalTasksQuery, [userId], (err1, totalResult) => {
+
+            db.query(statusQuery, [userId], (err2, statusResult) => {
+
+                db.query(overdueQuery, [userId], (err3, overdueResult) => {
+
+                    return res.json({
                         totalTasks: totalResult[0].total,
                         statusBreakdown: statusResult,
                         overdueTasks: overdueResult[0].overdue,
-                        userStats: userResult
+                        userStats: []
                     });
+
                 });
+
             });
+
         });
-    });
+
+    }
+
 };
 
 module.exports = { getDashboardData };

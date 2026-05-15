@@ -157,163 +157,99 @@ function Projects() {
     }
   };
 
+return (
+  <Layout>
 
-  return (
-    <Layout>
+    <div className="page-container">
 
-      <h1>Projects</h1>
+      <h1 className="page-title">Projects</h1>
 
-      {/* CREATE PROJECT */}
       {role === "Admin" && (
-        <form onSubmit={handleCreateProject}>
+        <div className="top-card">
 
-          <input
-            type="text"
-            placeholder="Enter project name"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-          />
+          <form
+            onSubmit={handleCreateProject}
+            className="form-row"
+          >
 
-          <button>Create Project</button>
+            <input
+              type="text"
+              placeholder="Enter project name"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="input-field"
+            />
 
-        </form>
+            <button className="primary-btn">
+              Create Project
+            </button>
+
+          </form>
+
+        </div>
       )}
 
+      <div className="top-card">
 
-      <hr />
-
-
-      {/* SELECT PROJECT */}
-      <select
-        value={selectedProject}
-        onChange={(e) => {
-
-          setSelectedProject(e.target.value);
-
-          fetchMembers(e.target.value);
-        }}
-      >
-
-        <option value="">Select Project</option>
-
-        {projects.map((project) => (
-
-          <option
-            key={project.id}
-            value={project.id}
-          >
-            {project.project_name}
-          </option>
-        ))}
-
-      </select>
-
-
-      {/* ADD MEMBER */}
-      {role === "Admin" && selectedProject && (
-
-        <div>
+        <div className="form-row">
 
           <select
-            value={selectedUser}
-            onChange={(e) => setSelectedUser(e.target.value)}
+            value={selectedProject}
+            onChange={(e) => {
+              setSelectedProject(e.target.value);
+              fetchMembers(e.target.value);
+            }}
+            className="select-field"
           >
 
-            <option value="">Select User</option>
+            <option value="">Select Project</option>
 
-            {users.map((user) => (
-
+            {projects.map((project) => (
               <option
-                key={user.id}
-                value={user.id}
+                key={project.id}
+                value={project.id}
               >
-                {user.name}
+                {project.project_name}
               </option>
             ))}
 
           </select>
 
-          <button onClick={handleAddMember}>
-            Add Member
-          </button>
+          {role === "Admin" && selectedProject && (
+            <>
+              <select
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+                className="select-field"
+              >
+
+                <option value="">Select User</option>
+
+                {users.map((user) => (
+                  <option
+                    key={user.id}
+                    value={user.id}
+                  >
+                    {user.name}
+                  </option>
+                ))}
+
+              </select>
+
+              <button
+                className="primary-btn"
+                onClick={handleAddMember}
+              >
+                Add Member
+              </button>
+            </>
+          )}
 
         </div>
-      )}
-
-
-<hr />
-
-<h2>Projects With Members</h2>
-
-{projects.map((project) => (
-
-  <div
-    key={project.id}
-    className="project-card"
-    style={{
-      border: "1px solid gray",
-      padding: "15px",
-      marginBottom: "20px"
-    }}
-  >
-
-    <h3>{project.project_name}</h3>
-
-    <button
-      onClick={() => fetchMembers(project.id)}
-    >
-      View Members
-    </button>
-
-    {/* SHOW MEMBERS OF CURRENT PROJECT */}
-    {selectedProject == project.id && (
-
-      <div style={{ marginTop: "10px" }}>
-
-        {members.length === 0 ? (
-
-          <p>No members added</p>
-
-        ) : (
-
-          members.map((member) => (
-
-            <div
-              key={member.id}
-              style={{
-                display: "flex",
-                gap: "10px",
-                alignItems: "center",
-                marginBottom: "10px"
-              }}
-            >
-
-              <span>
-                {member.name} ({member.email})
-              </span>
-
-              {role === "Admin" && (
-
-                <button
-                  onClick={() => removeMember(member.id)}
-                >
-                  Remove
-                </button>
-              )}
-
-            </div>
-          ))
-        )}
 
       </div>
-    )}
 
-  </div>
-))}
-
-
-      {/* ALL PROJECTS */}
-      <div>
+      <div className="project-grid">
 
         {projects.map((project) => (
 
@@ -324,18 +260,68 @@ function Projects() {
 
             <h3>{project.project_name}</h3>
 
+            <button
+              className="primary-btn"
+              onClick={() => fetchMembers(project.id)}
+            >
+              View Members
+            </button>
+
+            {selectedProject == project.id && (
+
+              <div className="member-box">
+
+                {members.length === 0 ? (
+
+                  <p>No members added</p>
+
+                ) : (
+
+                  members.map((member) => (
+
+                    <div
+                      key={member.id}
+                      className="member-row"
+                    >
+
+                      <span>
+                        {member.name}
+                      </span>
+
+                      {role === "Admin" && (
+                        <button
+                          className="remove-btn"
+                          onClick={() => removeMember(member.id)}
+                        >
+                          Remove
+                        </button>
+                      )}
+
+                    </div>
+                  ))
+                )}
+
+              </div>
+            )}
+
           </div>
         ))}
 
       </div>
 
+      <br />
 
-      <button onClick={() => navigate("/tasks")}>
+      <button
+        className="primary-btn"
+        onClick={() => navigate("/tasks")}
+      >
         Go To Tasks
       </button>
 
-    </Layout>
-  );
+    </div>
+
+  </Layout>
+);
 }
 
 export default Projects;

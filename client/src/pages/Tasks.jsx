@@ -90,102 +90,146 @@ function Tasks() {
 
     fetchTasks();
   };
+return (
+  <Layout>
 
-  return (
-    <Layout>
-      <div className="page-content">
-        <h2>Tasks</h2>
+    <div className="page-container">
 
-        {/* CREATE TASK (ADMIN ONLY) */}
-        {role === "Admin" && (
-          <div className="card">
-            <form onSubmit={handleCreateTask}>
-              <input
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+      <h1 className="page-title">Tasks</h1>
 
-              <input
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+      {role === "Admin" && (
 
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value)}
-              >
-                <option>High</option>
-                <option>Medium</option>
-                <option>Low</option>
-              </select>
+        <div className="top-card">
 
-              <input
-                type="date"
-                min={new Date().toISOString().split("T")[0]}
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-              />
+          <form
+            onSubmit={handleCreateTask}
+            className="form-row"
+          >
 
-              <select
-                value={projectId}
-                onChange={(e) => {
-                  setProjectId(e.target.value);
-                  fetchMembers(e.target.value);
-                }}
-              >
-                <option value="">Select Project</option>
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.project_name}
-                  </option>
-                ))}
-              </select>
+            <input
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="input-field"
+            />
 
-              <select
-                value={assignedTo}
-                onChange={(e) => setAssignedTo(e.target.value)}
-              >
-                <option value="">Assign User</option>
-                {members.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
-                  </option>
-                ))}
-              </select>
+            <input
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="input-field"
+            />
 
-              <button>Create Task</button>
-            </form>
-          </div>
-        )}
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="select-field"
+            >
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
 
-        {/* TASK LIST */}
-        <div>
-          {tasks.map((task) => (
-            <div className="card" key={task.id}>
-              <h3>{task.title}</h3>
-              <p>{task.description}</p>
+            <input
+              type="date"
+              min={new Date().toISOString().split("T")[0]}
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="input-field"
+            />
 
-              <p>Priority: {task.priority}</p>
-              <p>Due: {new Date(task.due_date).toLocaleDateString()}</p>
+            <select
+              value={projectId}
+              onChange={(e) => {
+                setProjectId(e.target.value);
+                fetchMembers(e.target.value);
+              }}
+              className="select-field"
+            >
 
-              {/* STATUS CONTROL */}
-              <select
-                value={task.status}
-                onChange={(e) => updateTaskStatus(task.id, e.target.value)}
-              >
-                <option value="Todo">Todo</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Done">Done</option>
-              </select>
-              {role === "Admin" && <p>Assigned To: {task.assigned_user}</p>}
-            </div>
-          ))}
+              <option value="">Select Project</option>
+
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.project_name}
+                </option>
+              ))}
+
+            </select>
+
+            <select
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className="select-field"
+            >
+
+              <option value="">Assign User</option>
+
+              {members.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+
+            </select>
+
+            <button className="primary-btn">
+              Create Task
+            </button>
+
+          </form>
+
         </div>
+      )}
+
+      <div className="task-grid">
+
+        {tasks.map((task) => (
+
+          <div
+            key={task.id}
+            className="task-card"
+          >
+
+            <h3>{task.title}</h3>
+
+            <p>{task.description}</p>
+
+            <p className="info-text">
+              Priority: {task.priority}
+            </p>
+
+            <p className="info-text">
+              Due: {new Date(task.due_date).toLocaleDateString()}
+            </p>
+
+            {role === "Admin" && (
+              <p className="info-text">
+                Assigned To: {task.assigned_user}
+              </p>
+            )}
+
+            <select
+              value={task.status}
+              onChange={(e) =>
+                updateTaskStatus(task.id, e.target.value)
+              }
+              className="status-select"
+            >
+              <option value="Todo">Todo</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+
+          </div>
+        ))}
+
       </div>
-    </Layout>
-  );
+
+    </div>
+
+  </Layout>
+);
 }
 
 export default Tasks;
