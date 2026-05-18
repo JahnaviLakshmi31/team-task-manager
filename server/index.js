@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+require("dotenv").config();
 require('./db/db');
 
 const authMiddleware = require("./middleware/authMiddleware");
@@ -36,5 +37,7 @@ app.get("/profile", authMiddleware, (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log("Server Started on ${PORT}");
+  console.log(`Server Started on ${PORT}`);
 });
+console.log(process.env.MYSQLUSER + "==============");
+console.log(process.env.MYSQLHOST + "++++++++++++++");
