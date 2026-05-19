@@ -19,6 +19,8 @@
 // })
 // module.exports = db;
 
+// mysql -h switchyard.proxy.rlwy.net -u root -p RNLhlGOMkYxNSjRCHrTVGGSDjLVkDRjE --port 23722 --protocol=TCP railway
+
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
