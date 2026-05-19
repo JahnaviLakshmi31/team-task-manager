@@ -4,12 +4,7 @@ const jwt = require("jsonwebtoken");
 
 // REGISTER
 const registerUser = (req, res) => {
-
-    console.log("REGISTER HIT");
-
     const { name, email, password } = req.body;
-
-    console.log(req.body);
 
     if (!name || !email || !password) {
         return res.status(400).json({ message: "All fields are required" });
@@ -18,10 +13,6 @@ const registerUser = (req, res) => {
     const checkUser = "SELECT * FROM users WHERE email = ?";
 
     db.query(checkUser, [email], async (err, result) => {
-
-        console.log(err);
-        console.log(result);
-
         if (err) {
             return res.status(500).json({ message: "Database error" });
         }
@@ -39,9 +30,6 @@ const registerUser = (req, res) => {
             insertQuery,
             [name, email, hashedPassword, "Member"],
             (err2) => {
-
-                console.log(err2);
-
                 if (err2) {
                     return res.status(500).json({ message: "Registration failed" });
                 }
@@ -57,10 +45,7 @@ const registerUser = (req, res) => {
 
 // LOGIN
 const loginUser = (req, res) => {
-    console.log("LOGIN HIT");
-
     const { email, password } = req.body;
-    console.log(req.body);
 
     if (!email || !password) {
         return res.status(400).json({ message: "Email and password required" });
@@ -69,8 +54,6 @@ const loginUser = (req, res) => {
     const query = "SELECT * FROM users WHERE email = ?";
 
     db.query(query, [email], async (err, result) => {
-        console.log(err);
-        console.log(result);
         if (err) {
             return res.status(500).json({ message: "Database error" });
         }
